@@ -1,0 +1,58 @@
+name: FerryBan
+version: ${project.version}
+main: me.ferrybig.javacoding.bukkit.ferryban.Main
+author: Ferrybig
+commands:
+    pardon:
+        aliases: [unban,un-ban,uban]
+        permissions: ferryban.pardon
+        usage: /<command> <playername>
+    pardon-ip:
+        aliases: [unbanip,un-banip,ubanip,un-ban-ip,unban-ip,pardonip]
+        permissions: ferryban.pardonip
+        usage: /<command> <ip-address>
+    ban:
+        aliases: []
+        permissions: ferryban.ban
+        usage: /<command> <playername> [reason]
+    ban-ip:
+        aliases: [banip]
+        permissions: ferryban.banip
+        usage: /<command> <ip-address> [reason]
+    temp-ban:
+        aliases: [tempban]
+        permissions: ferryban.tempban
+        usage: /<command> <playername> <time> [reason]
+    temp-ban-ip:
+        aliases: [tempbanip,temp-banip,tempban-ip]
+        permissions: ferryban.tempbanip
+        usage: /<command> <ip-address> <time> [reason]
+    ban-info:
+        aliases: [baninfo]
+        permissions: ferryban.baninfo
+        usage: /<command> <playername|ip-address>
+    kick:
+        aliases: []
+        permissions: ferryban.kick
+        usage: /<command> <playername> [reason]
+    kick-ip:
+        aliases: [kickip]
+        permissions: ferryban.kickip
+        usage: /<command> <ip-address> [reason]
+    ferrybigbanreload:
+        aliases: [fbr]
+        permissions: ferryban.reload
+permissions:
+    ferryban.*:
+        description: All permisions for FerryBan
+        children:
+            ferryban.kickip: true
+            ferryban.kick: true
+            ferryban.baninfo: true
+            ferryban.tempbanip: true
+            ferryban.tempban: true
+            ferryban.banip: true
+            ferryban.ban: true
+            ferryban.pardonip: true
+            ferryban.pardon: true
+            ferryban.reload: true
