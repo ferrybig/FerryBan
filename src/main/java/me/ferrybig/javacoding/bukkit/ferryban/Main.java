@@ -37,6 +37,7 @@ import me.ferrybig.javacoding.bukkit.ferryban.utils.TimeConverter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -53,7 +54,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class Main extends JavaPlugin implements Listener {
 
 	private static final Charset UTF8 = Charset.forName("UTF-8");
-	
+
 	public static final UUID CONSOLE = UUID.nameUUIDFromBytes("CONSOLE".getBytes(UTF8));
 
 	public final Map<InetAddress, IpBanInfo> ipBans = new HashMap<>();
@@ -63,24 +64,22 @@ public class Main extends JavaPlugin implements Listener {
 	private static final String IP_BANS_FILE = "ipbans.yml";
 
 	private static final String PLAYER_BANS_FILE = "playerbans.yml";
-	
-	private static final String BAN_TEMPLATE = "ban.template";
-	
-	private static final String BAN_FOREVER_TEMPLATE = "banforever.template";
-	
-	private static final String KICK_TEMPLATE = "kick.template";
 
 	private static final String CONFIG_VERSION = "1";
-	
+
 	public static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm (X)");
-	
+
 	private boolean enabled = false;
+
+	private TemplateFile banFormat;
+
+	private TemplateFile foreverBanFormat;
+
+	private TemplateFile kickFormat;
 	
-	private String banFormat;
+	private TemplateFile kickGameFormat;
 	
-	private String foreverBanFormat;
-	
-	private String kickFormat;
+	private TemplateFile banGameFormat;
 
 	public final Map<UUID, InetAddress> playerToIp = new LinkedHashMap<UUID, InetAddress>() {
 
@@ -102,13 +101,13 @@ public class Main extends JavaPlugin implements Listener {
 	@Override
 	public void onEnable() {
 		try {
-            load();
-        } catch (IOException e) {
-            this.getLogger().log(Level.SEVERE, "Cannot load plugin", e);
-            this.getServer().getPluginManager().disablePlugin(this);
-            this.setEnabled(false);
-            return;
-        }
+			load();
+		} catch (IOException e) {
+			this.getLogger().log(Level.SEVERE, "Cannot load plugin", e);
+			this.getServer().getPluginManager().disablePlugin(this);
+			this.setEnabled(false);
+			return;
+		}
 		this.getCommand("ban").setExecutor(new BanCommand(this));
 		this.getCommand("ban-ip").setExecutor(new BanIpCommand(this));
 		this.getCommand("temp-ban-ip").setExecutor(new TempBanIpCommand(this));
@@ -124,7 +123,9 @@ public class Main extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable() {
-		if(!enabled) return;
+		if (!enabled) {
+			return;
+		}
 		if (this.task != null) {
 			this.task.run();
 			this.task = null;
@@ -132,33 +133,36 @@ public class Main extends JavaPlugin implements Listener {
 		enabled = false;
 	}
 
-	public void load() throws IOException  {
+	public void load() throws IOException {
 		File bansInfo = new File(this.getDataFolder(), IP_BANS_FILE);
 		File playersInfo = new File(this.getDataFolder(), PLAYER_BANS_FILE);
-		File banFile = new File(this.getDataFolder(), BAN_TEMPLATE);
-		File kickFile = new File(this.getDataFolder(), KICK_TEMPLATE);
-		File banforeverFile = new File(this.getDataFolder(), BAN_FOREVER_TEMPLATE);
+		banFormat = new TemplateFile(new File(this.getDataFolder(), "ban.template"));
+		kickFormat = new TemplateFile(new File(this.getDataFolder(), "kick.template"));
+		foreverBanFormat = new TemplateFile(new File(this.getDataFolder(), "banforever.template"));
+		kickGameFormat = new TemplateFile(new File(this.getDataFolder(), "kick.ingame.template"));
+		banGameFormat = new TemplateFile(new File(this.getDataFolder(), "ban.ingame.template"));
 		List<Exception> exceptions = new ArrayList<>();
 		long now = System.currentTimeMillis();
-		
-		if(bansInfo.exists()) {
+
+		if (bansInfo.exists()) {
 			ipBans.clear();
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
-				bansInfo), UTF8))) {
+					bansInfo), UTF8))) {
 				String line;
-				while((line = reader.readLine()) != null){
-					if(line.startsWith("#")) {
+				while ((line = reader.readLine()) != null) {
+					if (line.startsWith("#")) {
 						continue;
 					}
 					String[] parts = line.split("\t", 4);
-					if(parts.length < 4)
+					if (parts.length < 4) {
 						continue;
+					}
 					InetAddress addr = InetAddress.getByName(parts[0]);
 					UUID banner = UUID.fromString(parts[1]);
 					long time = Long.parseLong(parts[2]);
 					String reason = parts[3];
-					
-					if(now > time) {
+
+					if (now > time) {
 						getLogger().log(Level.INFO, "Ban of {0} has expired.", addr.getHostAddress());
 						continue;
 					}
@@ -168,25 +172,26 @@ public class Main extends JavaPlugin implements Listener {
 				exceptions.add(ex);
 			}
 		}
-		
-		if(playersInfo.exists()) {
+
+		if (playersInfo.exists()) {
 			playerBans.clear();
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
-				playersInfo), UTF8))) {
+					playersInfo), UTF8))) {
 				String line;
-				while((line = reader.readLine()) != null){
-					if(line.startsWith("#")) {
+				while ((line = reader.readLine()) != null) {
+					if (line.startsWith("#")) {
 						continue;
 					}
 					String[] parts = line.split("\t", 4);
-					if(parts.length < 4)
+					if (parts.length < 4) {
 						continue;
+					}
 					UUID userid = UUID.fromString(parts[0]);
 					UUID banner = UUID.fromString(parts[1]);
 					long time = Long.parseLong(parts[2]);
 					String reason = parts[3];
-					
-					if(now > time) {
+
+					if (now > time) {
 						getLogger().log(Level.INFO, "Ban of {0} has expired.", userid);
 						continue;
 					}
@@ -196,55 +201,23 @@ public class Main extends JavaPlugin implements Listener {
 				exceptions.add(ex);
 			}
 		}
+
+		kickGameFormat.load(exceptions);
+		kickFormat.load(exceptions);
+		banGameFormat.load(exceptions);
+		banFormat.load(exceptions);
+		foreverBanFormat.load(exceptions);
 		
-		if(!banFile.exists())
-			this.saveResource(BAN_TEMPLATE, false);
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
-			banFile), UTF8))) {
-			StringBuilder total = new StringBuilder();
-			String line;
-			while((line = reader.readLine()) != null){
-				total.append(line).append('\n');
+		if(!exceptions.isEmpty()) {
+			if(exceptions.size() == 1) {
+				throw new IOException("Problem loading config", exceptions.get(0));
+			} else {
+				IOException ex = new IOException("Problem loading config");
+				for(Exception e : exceptions) {
+					ex.addSuppressed(e);
+				}
+				throw ex;
 			}
-			this.banFormat = total.toString();
-		} catch (IOException ex) {
-			exceptions.add(ex);
-		}
-		
-		if(!banforeverFile.exists())
-			this.saveResource(BAN_FOREVER_TEMPLATE, false);
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
-			banforeverFile), UTF8))) {
-			StringBuilder total = new StringBuilder();
-			String line;
-			while((line = reader.readLine()) != null){
-				total.append(line).append('\n');
-			}
-			this.foreverBanFormat = total.toString();
-		} catch (IOException ex) {
-			exceptions.add(ex);
-		}
-		
-		if(!kickFile.exists())
-			this.saveResource(KICK_TEMPLATE, false);
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
-			kickFile), UTF8))) {
-			StringBuilder total = new StringBuilder();
-			String line;
-			while((line = reader.readLine()) != null){
-				total.append(line).append('\n');
-			}
-			this.kickFormat = total.toString();
-		} catch (IOException ex) {
-			exceptions.add(ex);
-		}
-		
-		if (!exceptions.isEmpty()) {
-			IOException e = new IOException("Problem saving plugin");
-			for (Exception ee : exceptions) {
-				e.addSuppressed(ee);
-			}
-			throw e;
 		}
 	}
 
@@ -330,89 +303,94 @@ public class Main extends JavaPlugin implements Listener {
 			throw e;
 		}
 	}
-	
+
 	public String formatBanInfo(BanInfo info) {
-		String format;
-		if(info.getUntil() == 0) {
+		TemplateFile format;
+		if (info.getUntil() == 0) {
 			format = kickFormat;
 		} else if (info.getUntil() == Long.MAX_VALUE) {
 			format = foreverBanFormat;
 		} else {
 			format = banFormat;
 		}
-		return format.replace("{{reason}}", info.getReason()).replace("{{expires}}", TimeConverter.getMessage(info.getUntil() - System.currentTimeMillis(), 2));
+		return format.getFormat().replace("{{reason}}", info.getReason()).replace("{{expires}}", TimeConverter.getMessage(info.getUntil() - System.currentTimeMillis(), 1));
 	}
-	
+
 	public void actOnIp(CommandSender banner, InetAddress address, String reason, long time) {
-		IpBanInfo info = new IpBanInfo(address, time, banner instanceof Player ? ((Player)banner).getUniqueId() : CONSOLE, reason);
-		if(time != 0) {
+		IpBanInfo info = new IpBanInfo(address, time, banner instanceof Player ? ((Player) banner).getUniqueId() : CONSOLE, reason);
+		if (time != 0) {
 			banner.sendMessage("Banned ip address " + address);
 			this.ipBans.put(address, info);
 		} else {
 			banner.sendMessage("Kicked ip address " + address);
 		}
 		String formatted = this.formatBanInfo(info);
-		for(Map.Entry<UUID,InetAddress> entry : this.playerToIp.entrySet()) {
-			if(entry.getValue().equals(address)) {
+		for (Map.Entry<UUID, InetAddress> entry : this.playerToIp.entrySet()) {
+			if (entry.getValue().equals(address)) {
 				OfflinePlayer player = this.getServer().getOfflinePlayer(entry.getKey());
-				if(player.isOnline()) {
-					((Player)player).kickPlayer(formatted);
+				if (player.isOnline()) {
+					((Player) player).kickPlayer(formatted);
 					banner.sendMessage("Kicked " + player.getName() + " because he has a banned/kicked ip");
 				}
-				
+
 			}
 		}
 		this.scheduleSave();
 	}
-	
+
 	public void actOnIp(CommandSender banner, UUID username, String reason, long time) {
 		OfflinePlayer o = this.getServer().getOfflinePlayer(username);
 		InetAddress ip = this.playerToIp.get(username);
-		if(ip == null) {
+		if (ip == null) {
 			banner.sendMessage("Username " + o.getName() + " has NO ip address");
 			return;
 		}
 		banner.sendMessage("Username " + o.getName() + " has ip " + ip.getHostAddress());
 		this.actOnIp(banner, ip, reason, time);
-		
+
 	}
-	
+
 	public void actOnPlayer(CommandSender banner, UUID username, String reason, long time) {
 		final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(username);
 		final UUID uniqueId = offlinePlayer.getUniqueId();
-		PlayerBanInfo info = new PlayerBanInfo(uniqueId, time, banner instanceof Player ? ((Player)banner).getUniqueId() : CONSOLE, reason);
-		if(time != 0) {
-			banner.sendMessage("Banned player " + offlinePlayer.getName());
+		PlayerBanInfo info = new PlayerBanInfo(uniqueId, time, banner instanceof Player ? ((Player) banner).getUniqueId() : CONSOLE, reason);
+		if (time != 0) {
+			Command.broadcastCommandMessage(banner, "Banned player " + offlinePlayer.getName());
 			this.playerBans.put(uniqueId, info);
-			Bukkit.broadcastMessage(ChatColor.WHITE + "--------------------");
-			Bukkit.broadcastMessage(ChatColor.WHITE + offlinePlayer.getName() + " was banned for");
-			Bukkit.broadcastMessage(ChatColor.WHITE + reason);
-			Bukkit.broadcastMessage(ChatColor.WHITE + "--------------------");
+			for(String s : this.banGameFormat.getFormat()
+					.replace("{{name}}", offlinePlayer.getName())
+					.replace("{{reason}}", reason)
+					.replace("{{expires}}", TimeConverter.getMessage(info.getUntil() - System.currentTimeMillis(), 1))
+					.split("\n")) {
+				Bukkit.broadcastMessage(s);
+			}
 		} else {
-			banner.sendMessage("Kicked player " + offlinePlayer.getName());
-			Bukkit.broadcastMessage(ChatColor.WHITE + "--------------------");
-			Bukkit.broadcastMessage(ChatColor.WHITE + offlinePlayer.getName() + " was kicked for");
-			Bukkit.broadcastMessage(ChatColor.WHITE + reason);
-			Bukkit.broadcastMessage(ChatColor.WHITE + "--------------------");
+			Command.broadcastCommandMessage(banner, "Kicked player " + offlinePlayer.getName());
+			for(String s : this.kickGameFormat.getFormat()
+					.replace("{{name}}", offlinePlayer.getName())
+					.replace("{{reason}}", reason)
+					.split("\n")) {
+				Bukkit.broadcastMessage(s);
+			}
 		}
 		String formatted = this.formatBanInfo(info);
-		if(offlinePlayer.isOnline()) {
-			((Player)offlinePlayer).kickPlayer(formatted);
+		if (offlinePlayer.isOnline()) {
+			((Player) offlinePlayer).kickPlayer(formatted);
 		}
 		this.scheduleSave();
 	}
-	
+
 	@EventHandler
 	public void onjoin(PlayerJoinEvent evt) {
 		this.ipToPlayer.put(evt.getPlayer().getAddress().getAddress(), evt.getPlayer().getUniqueId());
 		this.playerToIp.put(evt.getPlayer().getUniqueId(), evt.getPlayer().getAddress().getAddress());
 	}
-	
+
 	@EventHandler
 	public void onlogin(AsyncPlayerPreLoginEvent event) {
 		BanInfo info = this.playerBans.get(event.getUniqueId());
-		if(info != null) {
-			if(info.getUntil() < System.currentTimeMillis()) {
+		if (info != null) {
+			if (info.getUntil() < System.currentTimeMillis()) {
 				this.playerBans.remove(event.getUniqueId());
 				this.scheduleSave();
 			} else {
@@ -420,8 +398,8 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		}
 		info = this.ipBans.get(event.getAddress());
-		if(info != null) {
-			if(info.getUntil() < System.currentTimeMillis()) {
+		if (info != null) {
+			if (info.getUntil() < System.currentTimeMillis()) {
 				this.ipBans.remove(event.getAddress());
 				this.scheduleSave();
 			} else {
@@ -429,6 +407,38 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		}
 	}
-	
+
+	public class TemplateFile {
+
+		private final File file;
+		private String contents = "";
+
+		public TemplateFile(File file) {
+			this.file = file;
+		}
+
+		public String getFormat() {
+			return contents;
+		}
+
+		public void load(List<Exception> exceptionHandler) {
+			try {
+				if (!file.exists()) {
+					saveResource(file.getName(), false);
+				}
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
+						file), UTF8))) {
+					StringBuilder total = new StringBuilder();
+					String line;
+					while ((line = reader.readLine()) != null) {
+						total.append(line).append('\n');
+					}
+					this.contents = ChatColor.translateAlternateColorCodes('&', total.toString());
+				}
+			} catch (IOException ex) {
+				exceptionHandler.add(ex);
+			}
+		}
+	}
 
 }

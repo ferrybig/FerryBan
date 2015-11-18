@@ -34,7 +34,7 @@ public class PardonCommand implements CommandExecutor {
 			sender.sendMessage("Player not found!");
 			return true;
 		}
-		sender.sendMessage("Unbanning player: " + player.getName() + " ("+player.getUniqueId() + ")");
+		Command.broadcastCommandMessage(sender, "Unbanning player: " + player.getName() + " ("+player.getUniqueId() + ")");
 		if(player.getFirstPlayed() == 0) {
 			sender.sendMessage("Warning: this player has not played before");
 		}

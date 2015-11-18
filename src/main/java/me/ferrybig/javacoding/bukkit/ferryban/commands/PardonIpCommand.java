@@ -37,7 +37,7 @@ public class PardonIpCommand implements TabExecutor{
 		if(args[0].matches("[a-zA-Z0-9_-]{1,16}"))
 		{
 			OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
-			sender.sendMessage("Ip banning player: " + player.getName() + " ("+player.getUniqueId() + ")");
+			sender.sendMessage("Ip unbanning player: " + player.getName() + " ("+player.getUniqueId() + ")");
 			if(player.getFirstPlayed() == 0) {
 				sender.sendMessage("Warning: this player has not played before");
 			}

@@ -39,7 +39,7 @@ commands:
         aliases: [kickip]
         permissions: ferryban.kickip
         usage: /<command> <ip-address> [reason]
-    ferrybigbanreload:
+    ferrybanreload:
         aliases: [fbr]
         permissions: ferryban.reload
 permissions:
