@@ -255,7 +255,7 @@ public class Main extends JavaPlugin implements Listener {
 
 		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
 				new File(this.getDataFolder(), IP_BANS_FILE)), UTF8))) {
-			writer.append("#| DistributedBans config V ");
+			writer.append(BAN_FILE_CONFIG_HEADER);
 			writer.append(CONFIG_VERSION);
 			writer.newLine();
 			writer.append("# ");
@@ -276,7 +276,7 @@ public class Main extends JavaPlugin implements Listener {
 
 		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
 				new File(this.getDataFolder(), PLAYER_BANS_FILE)), UTF8))) {
-			writer.append("#| DistributedBans config V ");
+			writer.append(BAN_FILE_CONFIG_HEADER);
 			writer.append(CONFIG_VERSION);
 			writer.newLine();
 			writer.append("# ");
@@ -303,6 +303,7 @@ public class Main extends JavaPlugin implements Listener {
 			throw e;
 		}
 	}
+	private static final String BAN_FILE_CONFIG_HEADER = "#| FerryBan config V ";
 
 	public String formatBanInfo(BanInfo info) {
 		TemplateFile format;
