@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import me.ferrybig.javacoding.bukkit.ferryban.BanInfo;
 import me.ferrybig.javacoding.bukkit.ferryban.Main;
+import static me.ferrybig.javacoding.bukkit.ferryban.Main.CONSOLE;
 import me.ferrybig.javacoding.bukkit.ferryban.utils.TimeConverter;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -64,7 +65,7 @@ public class BanInfoIpCommand implements TabExecutor{
 			sender.sendMessage("Ip not banned!");
 		} else {
 			sender.sendMessage("Ip is banned!");
-			sender.sendMessage("Banner: " + this.plugin.getServer().getOfflinePlayer(info.getBanner()).getName());
+			sender.sendMessage("Banner: " + (info.getBanner().equals(CONSOLE) ? "Console" : this.plugin.getServer().getOfflinePlayer(info.getBanner()).getName()));
 			sender.sendMessage("Banned until: " + Main.df.format(new Date(info.getUntil())));
 			sender.sendMessage("Time remaining: " + TimeConverter.getMessage(info.getUntil() - System.currentTimeMillis(),2));
 			sender.sendMessage("Reason: "+ info.getReason());

@@ -8,6 +8,7 @@ package me.ferrybig.javacoding.bukkit.ferryban.commands;
 import java.util.Date;
 import me.ferrybig.javacoding.bukkit.ferryban.BanInfo;
 import me.ferrybig.javacoding.bukkit.ferryban.Main;
+import static me.ferrybig.javacoding.bukkit.ferryban.Main.CONSOLE;
 import me.ferrybig.javacoding.bukkit.ferryban.utils.TimeConverter;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -42,7 +43,7 @@ public class BanInfoCommand implements CommandExecutor{
 			sender.sendMessage("Player not banned!");
 		} else {
 			sender.sendMessage("Player is banned!");
-			sender.sendMessage("Banner: " + this.plugin.getServer().getOfflinePlayer(info.getBanner()).getName());
+			sender.sendMessage("Banner: " + (info.getBanner().equals(CONSOLE) ? "Console" : this.plugin.getServer().getOfflinePlayer(info.getBanner()).getName()));
 			sender.sendMessage("Banned until: " + Main.df.format(new Date(info.getUntil())));
 			sender.sendMessage("Time remaining: " + TimeConverter.getMessage(info.getUntil() - System.currentTimeMillis(),2));
 			sender.sendMessage("Reason: "+ info.getReason());
