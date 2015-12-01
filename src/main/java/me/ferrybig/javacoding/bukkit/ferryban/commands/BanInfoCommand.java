@@ -5,21 +5,26 @@
  */
 package me.ferrybig.javacoding.bukkit.ferryban.commands;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import me.ferrybig.javacoding.bukkit.ferryban.BanInfo;
 import me.ferrybig.javacoding.bukkit.ferryban.Main;
 import static me.ferrybig.javacoding.bukkit.ferryban.Main.CONSOLE;
 import me.ferrybig.javacoding.bukkit.ferryban.utils.TimeConverter;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 
 /**
  *
  * @author Fernando
  */
-public class BanInfoCommand implements CommandExecutor{
+public class BanInfoCommand implements TabExecutor{
 	private final Main plugin;
 
 	public BanInfoCommand(Main plugin) {
@@ -49,6 +54,15 @@ public class BanInfoCommand implements CommandExecutor{
 			sender.sendMessage("Reason: "+ info.getReason());
 		}
 		return true;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+		List<String> autoComplete = new ArrayList<>();
+		for(UUID id : plugin.playerBans.keySet()) {
+			autoComplete.add(Bukkit.getOfflinePlayer(id).getName());
+		}
+		return autoComplete;
 	}
 	
 	
