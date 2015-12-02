@@ -60,7 +60,10 @@ public class BanInfoCommand implements TabExecutor{
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 		List<String> autoComplete = new ArrayList<>();
 		for(UUID id : plugin.playerBans.keySet()) {
-			autoComplete.add(Bukkit.getOfflinePlayer(id).getName());
+			String name = Bukkit.getOfflinePlayer(id).getName();
+			if (name.startsWith(args[args.length - 1])) {
+				autoComplete.add(name);
+			}
 		}
 		return autoComplete;
 	}

@@ -5,17 +5,21 @@
  */
 package me.ferrybig.javacoding.bukkit.ferryban.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import me.ferrybig.javacoding.bukkit.ferryban.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 
 /**
  *
  * @author Fernando
  */
-public class PardonCommand implements CommandExecutor {
+public class PardonCommand implements TabExecutor {
 	private final Main plugin;
 
 	public PardonCommand(Main plugin) {
@@ -41,5 +45,17 @@ public class PardonCommand implements CommandExecutor {
 		plugin.playerBans.remove(player.getUniqueId());
 		plugin.scheduleSave();
 		return true;
+	}
+	
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+		List<String> autoComplete = new ArrayList<>();
+		for(UUID id : plugin.playerBans.keySet()) {
+			String name = Bukkit.getOfflinePlayer(id).getName();
+			if (name.startsWith(args[args.length - 1])) {
+				autoComplete.add(name);
+			}
+		}
+		return autoComplete;
 	}
 }
