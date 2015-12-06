@@ -98,6 +98,8 @@ public class Main extends JavaPlugin implements Listener {
 
 	};
 
+	private BukkitRunnable saveTask;
+
 	@Override
 	public void onEnable() {
 		try {
@@ -126,9 +128,9 @@ public class Main extends JavaPlugin implements Listener {
 		if (!enabled) {
 			return;
 		}
-		if (this.task != null) {
-			this.task.run();
-			this.task = null;
+		if (this.saveTask != null) {
+			this.saveTask.run();
+			this.saveTask = null;
 		}
 		enabled = false;
 	}
@@ -221,16 +223,14 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
-	BukkitRunnable task;
-
 	private void refreshTask() {
-		this.task = this.createTask();
+		this.saveTask = this.createTask();
 	}
 
 	public void scheduleSave() {
-		if (this.task == null) {
+		if (this.saveTask == null) {
 			refreshTask();
-			this.task.runTaskTimer(this, 6000, 6000);
+			this.saveTask.runTaskTimer(this, 6000, 6000);
 		}
 	}
 
@@ -241,7 +241,7 @@ public class Main extends JavaPlugin implements Listener {
 				try {
 					save();
 					cancel();
-					task = null;
+					saveTask = null;
 				} catch (IOException ex) {
 					getLogger().log(Level.SEVERE, "Cannot save bans information!", ex);
 				}
