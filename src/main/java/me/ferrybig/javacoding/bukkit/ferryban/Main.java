@@ -76,9 +76,9 @@ public class Main extends JavaPlugin implements Listener {
 	private TemplateFile foreverBanFormat;
 
 	private TemplateFile kickFormat;
-	
+
 	private TemplateFile kickGameFormat;
-	
+
 	private TemplateFile banGameFormat;
 
 	public final Map<UUID, InetAddress> playerToIp = new LinkedHashMap<UUID, InetAddress>() {
@@ -209,13 +209,13 @@ public class Main extends JavaPlugin implements Listener {
 		banGameFormat.load(exceptions);
 		banFormat.load(exceptions);
 		foreverBanFormat.load(exceptions);
-		
-		if(!exceptions.isEmpty()) {
-			if(exceptions.size() == 1) {
+
+		if (!exceptions.isEmpty()) {
+			if (exceptions.size() == 1) {
 				throw new IOException("Problem loading config", exceptions.get(0));
 			} else {
 				IOException ex = new IOException("Problem loading config");
-				for(Exception e : exceptions) {
+				for (Exception e : exceptions) {
 					ex.addSuppressed(e);
 				}
 				throw ex;
@@ -358,7 +358,7 @@ public class Main extends JavaPlugin implements Listener {
 		if (time != 0) {
 			Command.broadcastCommandMessage(banner, "Banned player " + offlinePlayer.getName());
 			this.playerBans.put(uniqueId, info);
-			for(String s : this.banGameFormat.getFormat()
+			for (String s : this.banGameFormat.getFormat()
 					.replace("{{name}}", offlinePlayer.getName())
 					.replace("{{reason}}", reason)
 					.replace("{{expires}}", TimeConverter.getMessage(info.getUntil() - System.currentTimeMillis(), 1))
@@ -367,7 +367,7 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		} else {
 			Command.broadcastCommandMessage(banner, "Kicked player " + offlinePlayer.getName());
-			for(String s : this.kickGameFormat.getFormat()
+			for (String s : this.kickGameFormat.getFormat()
 					.replace("{{name}}", offlinePlayer.getName())
 					.replace("{{reason}}", reason)
 					.split("\n")) {
