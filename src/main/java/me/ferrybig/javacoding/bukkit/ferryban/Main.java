@@ -112,6 +112,8 @@ public class Main extends JavaPlugin implements Listener {
 		}
 		this.getCommand("ban").setExecutor(new BanCommand(this));
 		this.getCommand("ban-ip").setExecutor(new BanIpCommand(this));
+		this.getCommand("ban-info").setExecutor(new BanInfoCommand(this));
+		this.getCommand("ban-infoip").setExecutor(new BanInfoIpCommand(this));
 		this.getCommand("temp-ban-ip").setExecutor(new TempBanIpCommand(this));
 		this.getCommand("temp-ban").setExecutor(new TempBanCommand(this));
 		this.getCommand("kick").setExecutor(new KickCommand(this));

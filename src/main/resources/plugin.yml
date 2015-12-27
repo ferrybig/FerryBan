@@ -30,7 +30,11 @@ commands:
     ban-info:
         aliases: [baninfo]
         permissions: ferryban.baninfo
-        usage: /<command> <playername|ip-address>
+        usage: /<command> <playername>
+    ban-info-ip:
+        aliases: [baninfoip]
+        permissions: ferryban.baninfoip
+        usage: /<command> <ip>
     kick:
         aliases: []
         permissions: ferryban.kick
@@ -49,6 +53,7 @@ permissions:
             ferryban.kickip: true
             ferryban.kick: true
             ferryban.baninfo: true
+            ferryban.baninfoip: true
             ferryban.tempbanip: true
             ferryban.tempban: true
             ferryban.banip: true
