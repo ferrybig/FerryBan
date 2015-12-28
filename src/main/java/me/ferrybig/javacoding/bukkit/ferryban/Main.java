@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import me.ferrybig.javacoding.bukkit.ferryban.commands.BanCommand;
+import me.ferrybig.javacoding.bukkit.ferryban.commands.BanInfoCommand;
+import me.ferrybig.javacoding.bukkit.ferryban.commands.BanInfoIpCommand;
 import me.ferrybig.javacoding.bukkit.ferryban.commands.BanIpCommand;
 import me.ferrybig.javacoding.bukkit.ferryban.commands.KickCommand;
 import me.ferrybig.javacoding.bukkit.ferryban.commands.KickIpCommand;
