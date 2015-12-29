@@ -29,7 +29,7 @@ public class KickCommand implements CommandExecutor{
 		}
 		if(!command.testPermission(sender))
 			return true;
-		OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
+		Player player = plugin.getServer().getPlayer(args[0]);
 		if(player == null) {
 			sender.sendMessage("Player not found!");
 			return true;
