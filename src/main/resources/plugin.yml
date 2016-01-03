@@ -5,50 +5,51 @@ author: Ferrybig
 commands:
     pardon:
         aliases: [unban,un-ban,uban]
-        permissions: ferryban.pardon
+        permission: ferryban.pardon
         usage: /<command> <playername>
     pardon-ip:
         aliases: [unbanip,un-banip,ubanip,un-ban-ip,unban-ip,pardonip]
-        permissions: ferryban.pardonip
+        permission: ferryban.pardonip
         usage: /<command> <ip-address>
     ban:
         aliases: []
-        permissions: ferryban.ban
+        permission: ferryban.ban
         usage: /<command> <playername> [reason]
     ban-ip:
         aliases: [banip]
-        permissions: ferryban.banip
+        permission: ferryban.banip
         usage: /<command> <ip-address> [reason]
     temp-ban:
         aliases: [tempban]
-        permissions: ferryban.tempban
+        permission: ferryban.tempban
         usage: /<command> <playername> <time> [reason]
     temp-ban-ip:
         aliases: [tempbanip,temp-banip,tempban-ip]
-        permissions: ferryban.tempbanip
+        permission: ferryban.tempbanip
         usage: /<command> <ip-address> <time> [reason]
     ban-info:
         aliases: [baninfo]
-        permissions: ferryban.baninfo
+        permission: ferryban.baninfo
         usage: /<command> <playername>
     ban-info-ip:
         aliases: [baninfoip]
-        permissions: ferryban.baninfoip
+        permission: ferryban.baninfoip
         usage: /<command> <ip>
     kick:
         aliases: []
-        permissions: ferryban.kick
+        permission: ferryban.kick
         usage: /<command> <playername> [reason]
     kick-ip:
         aliases: [kickip]
-        permissions: ferryban.kickip
+        permission: ferryban.kickip
         usage: /<command> <ip-address> [reason]
     ferrybanreload:
         aliases: [fbr, ferry-ban-reload, ferryban-reload, ferry-banreload]
-        permissions: ferryban.reload
+        permission: ferryban.reload
 permissions:
     ferryban.*:
         description: All permisions for FerryBan
+        default: false
         children:
             ferryban.kickip: true
             ferryban.kick: true
@@ -61,3 +62,25 @@ permissions:
             ferryban.pardonip: true
             ferryban.pardon: true
             ferryban.reload: true
+    ferryban.kickip: 
+        default: op
+    ferryban.kick: 
+        default: op
+    ferryban.baninfo: 
+        default: op
+    ferryban.baninfoip: 
+        default: op
+    ferryban.tempbanip: 
+        default: op
+    ferryban.tempban: 
+        default: op
+    ferryban.banip: 
+        default: op
+    ferryban.ban: 
+        default: op
+    ferryban.pardonip: 
+        default: op
+    ferryban.pardon: 
+        default: op
+    ferryban.reload: 
+        default: op

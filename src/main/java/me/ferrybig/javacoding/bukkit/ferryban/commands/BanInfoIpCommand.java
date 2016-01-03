@@ -39,6 +39,8 @@ public class BanInfoIpCommand implements TabExecutor{
 		if(args.length < 1) {
 			return false;
 		}
+		if(!command.testPermission(sender))
+			return true;
 		InetAddress ip;
 		if(args[0].matches("[a-zA-Z0-9_-]{1,16}"))
 		{
