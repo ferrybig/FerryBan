@@ -5,8 +5,6 @@
  */
 package me.ferrybig.javacoding.bukkit.ferryban;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.util.UUID;
 
 /**
@@ -24,7 +22,5 @@ public class PlayerBanInfo extends BanInfo{
 	public UUID getId() {
 		return id;
 	}
-	
-	
 	
 }
