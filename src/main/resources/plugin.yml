@@ -2,6 +2,7 @@ name: FerryBan
 version: ${project.version}
 main: me.ferrybig.javacoding.bukkit.ferryban.Main
 author: Ferrybig
+description: Provides a simple ban sumpport
 commands:
     pardon:
         aliases: [unban,un-ban,uban]
@@ -32,7 +33,7 @@ commands:
         permission: ferryban.baninfo
         usage: /<command> <playername>
     ban-info-ip:
-        aliases: [baninfoip]
+        aliases: [baninfoip, ban-infoip, baninfo-ip]
         permission: ferryban.baninfoip
         usage: /<command> <ip>
     kick:
