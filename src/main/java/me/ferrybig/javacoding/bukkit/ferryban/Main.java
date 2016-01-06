@@ -69,7 +69,7 @@ public class Main extends JavaPlugin implements Listener {
 
 	private static final String CONFIG_VERSION = "1";
 
-	public static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm (X)");
+	public static final DateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm (X)");
 
 	private boolean enabled = false;
 

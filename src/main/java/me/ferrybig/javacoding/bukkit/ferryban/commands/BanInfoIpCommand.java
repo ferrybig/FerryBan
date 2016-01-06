@@ -68,7 +68,7 @@ public class BanInfoIpCommand implements TabExecutor{
 		} else {
 			sender.sendMessage("Ip is banned!");
 			sender.sendMessage("Banner: " + (info.getBanner().equals(CONSOLE) ? "Console" : this.plugin.getServer().getOfflinePlayer(info.getBanner()).getName()));
-			sender.sendMessage("Banned until: " + Main.df.format(new Date(info.getUntil())));
+			sender.sendMessage("Banned until: " + Main.DATE_FORMATTER.format(new Date(info.getUntil())));
 			sender.sendMessage("Time remaining: " + TimeConverter.getMessage(info.getUntil() - System.currentTimeMillis(),2));
 			sender.sendMessage("Reason: "+ info.getReason());
 		}
