@@ -32,7 +32,7 @@ public class ReloadCommand implements CommandExecutor {
 			main.load();
 			sender.sendMessage("Plugin reloaded");
 		} catch (IOException ex) {
-			sender.sendMessage("Problems with comfiguration, check console");
+			sender.sendMessage("Problems with configuration, check console");
 			main.getLogger().log(Level.WARNING, "Problems with config:", ex);
 		}
 		return true;
