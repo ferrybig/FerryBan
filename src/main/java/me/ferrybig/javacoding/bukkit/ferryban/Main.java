@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  */
 public class Main extends JavaPlugin implements Listener {
 
-	private static final Charset UTF8 = Charset.forName("UTF-8");
+	private static final Charset UTF8 = StandardCharsets.UTF_8;
 
 	public static final UUID CONSOLE = UUID.nameUUIDFromBytes("CONSOLE".getBytes(UTF8));
 
