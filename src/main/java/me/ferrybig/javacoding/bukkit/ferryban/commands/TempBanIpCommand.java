@@ -19,7 +19,8 @@ import org.bukkit.command.TabExecutor;
  *
  * @author Fernando
  */
-public class TempBanIpCommand implements TabExecutor{
+public class TempBanIpCommand implements TabExecutor {
+
 	private final Main plugin;
 
 	public TempBanIpCommand(Main plugin) {
@@ -28,26 +29,26 @@ public class TempBanIpCommand implements TabExecutor{
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if(args.length < 1) {
+		if (args.length < 1) {
 			return false;
 		}
-		if(!command.testPermission(sender))
+		if (!command.testPermission(sender)) {
 			return true;
-		if(args[0].matches("[a-zA-Z0-9_-]{1,16}"))
-		{
+		}
+		if (args[0].matches("[a-zA-Z0-9_-]{1,16}")) {
 			OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
-			sender.sendMessage("Ip banning player: " + player.getName() + " ("+player.getUniqueId() + ")");
-			if(player.getFirstPlayed() == 0) {
+			sender.sendMessage("Ip banning player: " + player.getName() + " (" + player.getUniqueId() + ")");
+			if (player.getFirstPlayed() == 0) {
 				sender.sendMessage("Warning: this player has not played before");
 			}
 			long time = TimeConverter.getLong(args[0]);
-			if(time == 0) {
+			if (time == 0) {
 				sender.sendMessage("Warning: time cannot be parsed");
 				return true;
 			}
 			sender.sendMessage("Will be banned for: " + TimeConverter.getMessage(time, 5));
 			StringBuilder reason = new StringBuilder();
-			for(int i = 2; i < args.length; i++) {
+			for (int i = 2; i < args.length; i++) {
 				reason.append(args[i]).append(' ');
 			}
 			plugin.actOnIp(sender, player.getUniqueId(), reason.toString().trim(), System.currentTimeMillis() + time);
@@ -57,21 +58,20 @@ public class TempBanIpCommand implements TabExecutor{
 				InetAddress ip = InetAddress.getByName(args[0]);
 				sender.sendMessage("Ip banning: " + ip.getHostAddress());
 				long time = TimeConverter.getLong(args[0]);
-				if(time == 0) {
+				if (time == 0) {
 					sender.sendMessage("Warning: time cannot be parsed");
 					return true;
 				}
 				sender.sendMessage("Will be banned for: " + TimeConverter.getMessage(time, 5));
 				StringBuilder reason = new StringBuilder();
-				for(int i = 2; i < args.length; i++) {
+				for (int i = 2; i < args.length; i++) {
 					reason.append(args[i]).append(' ');
 				}
 				plugin.actOnIp(sender, ip, reason.toString().trim(), System.currentTimeMillis() + time);
 			} catch (UnknownHostException ex) {
 				sender.sendMessage("Ip address not found: " + ex.getMessage());
 			}
-			
-			
+
 		}
 		return true;
 	}
@@ -80,6 +80,5 @@ public class TempBanIpCommand implements TabExecutor{
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 		return null;
 	}
-	
-	
+
 }
