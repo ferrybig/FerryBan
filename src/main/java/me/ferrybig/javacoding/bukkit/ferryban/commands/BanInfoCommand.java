@@ -24,7 +24,8 @@ import org.bukkit.command.TabExecutor;
  *
  * @author Fernando
  */
-public class BanInfoCommand implements TabExecutor{
+public class BanInfoCommand implements TabExecutor {
+
 	private final Main plugin;
 
 	public BanInfoCommand(Main plugin) {
@@ -33,25 +34,26 @@ public class BanInfoCommand implements TabExecutor{
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if(args.length < 1) {
+		if (args.length < 1) {
 			return false;
 		}
-		if(!command.testPermission(sender))
+		if (!command.testPermission(sender)) {
 			return true;
+		}
 		OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
-		if(player == null) {
+		if (player == null) {
 			sender.sendMessage("Player not found!");
 			return true;
 		}
 		BanInfo info = this.plugin.playerBans.get(player.getUniqueId());
-		if(info == null) {
+		if (info == null) {
 			sender.sendMessage("Player not banned!");
 		} else {
 			sender.sendMessage("Player is banned!");
 			sender.sendMessage("Banner: " + (info.getBanner().equals(CONSOLE) ? "Console" : this.plugin.getServer().getOfflinePlayer(info.getBanner()).getName()));
 			sender.sendMessage("Banned until: " + Main.DATE_FORMATTER.format(new Date(info.getUntil())));
-			sender.sendMessage("Time remaining: " + TimeConverter.getMessage(info.getUntil() - System.currentTimeMillis(),2));
-			sender.sendMessage("Reason: "+ info.getReason());
+			sender.sendMessage("Time remaining: " + TimeConverter.getMessage(info.getUntil() - System.currentTimeMillis(), 2));
+			sender.sendMessage("Reason: " + info.getReason());
 		}
 		return true;
 	}
@@ -59,7 +61,7 @@ public class BanInfoCommand implements TabExecutor{
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 		List<String> autoComplete = new ArrayList<>();
-		for(UUID id : plugin.playerBans.keySet()) {
+		for (UUID id : plugin.playerBans.keySet()) {
 			String name = Bukkit.getOfflinePlayer(id).getName();
 			if (name.startsWith(args[args.length - 1])) {
 				autoComplete.add(name);
@@ -67,6 +69,5 @@ public class BanInfoCommand implements TabExecutor{
 		}
 		return autoComplete;
 	}
-	
-	
+
 }

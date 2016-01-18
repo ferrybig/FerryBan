@@ -15,7 +15,8 @@ import org.bukkit.command.CommandSender;
  *
  * @author Fernando
  */
-public class BanCommand implements CommandExecutor{
+public class BanCommand implements CommandExecutor {
+
 	private final Main plugin;
 
 	public BanCommand(Main plugin) {
@@ -24,27 +25,27 @@ public class BanCommand implements CommandExecutor{
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if(args.length < 1) {
+		if (args.length < 1) {
 			return false;
 		}
-		if(!command.testPermission(sender))
+		if (!command.testPermission(sender)) {
 			return true;
+		}
 		OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
-		if(player == null) {
+		if (player == null) {
 			sender.sendMessage("Player not found!");
 			return true;
 		}
-		sender.sendMessage("Banning player: " + player.getName() + " ("+player.getUniqueId() + ")");
-		if(player.getFirstPlayed() == 0) {
+		sender.sendMessage("Banning player: " + player.getName() + " (" + player.getUniqueId() + ")");
+		if (player.getFirstPlayed() == 0) {
 			sender.sendMessage("Warning: this player has not played before");
 		}
 		StringBuilder reason = new StringBuilder();
-		for(int i = 1; i < args.length; i++) {
+		for (int i = 1; i < args.length; i++) {
 			reason.append(args[i]).append(' ');
 		}
 		plugin.actOnPlayer(sender, player.getUniqueId(), reason.toString().trim(), Long.MAX_VALUE);
 		return true;
 	}
-	
-	
+
 }

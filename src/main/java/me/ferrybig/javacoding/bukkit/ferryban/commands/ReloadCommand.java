@@ -7,7 +7,6 @@ package me.ferrybig.javacoding.bukkit.ferryban.commands;
 
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import me.ferrybig.javacoding.bukkit.ferryban.Main;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
