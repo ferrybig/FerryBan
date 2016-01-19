@@ -143,11 +143,11 @@ public class Main extends JavaPlugin implements Listener {
 	public void load() throws IOException {
 		File bansInfo = new File(this.getDataFolder(), IP_BANS_FILE);
 		File playersInfo = new File(this.getDataFolder(), PLAYER_BANS_FILE);
-		banFormat = new TemplateFile(new File(this.getDataFolder(), "ban.template"));
-		kickFormat = new TemplateFile(new File(this.getDataFolder(), "kick.template"));
-		foreverBanFormat = new TemplateFile(new File(this.getDataFolder(), "banforever.template"));
-		kickGameFormat = new TemplateFile(new File(this.getDataFolder(), "kick.ingame.template"));
-		banGameFormat = new TemplateFile(new File(this.getDataFolder(), "ban.ingame.template"));
+		banFormat = new TemplateFile(this, new File(this.getDataFolder(), "ban.template"));
+		kickFormat = new TemplateFile(this, new File(this.getDataFolder(), "kick.template"));
+		foreverBanFormat = new TemplateFile(this, new File(this.getDataFolder(), "banforever.template"));
+		kickGameFormat = new TemplateFile(this, new File(this.getDataFolder(), "kick.ingame.template"));
+		banGameFormat = new TemplateFile(this, new File(this.getDataFolder(), "ban.ingame.template"));
 		List<Exception> exceptions = new ArrayList<>();
 		long now = System.currentTimeMillis();
 
@@ -414,37 +414,5 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
-	public class TemplateFile {
-
-		private final File file;
-		private String contents = "";
-
-		public TemplateFile(File file) {
-			this.file = file;
-		}
-
-		public String getFormat() {
-			return contents;
-		}
-
-		public void load(List<Exception> exceptionHandler) {
-			try {
-				if (!file.exists()) {
-					saveResource(file.getName(), false);
-				}
-				try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
-						file), UTF8))) {
-					StringBuilder total = new StringBuilder();
-					String line;
-					while ((line = reader.readLine()) != null) {
-						total.append(line).append('\n');
-					}
-					this.contents = ChatColor.translateAlternateColorCodes('&', total.toString());
-				}
-			} catch (IOException ex) {
-				exceptionHandler.add(ex);
-			}
-		}
-	}
 
 }
