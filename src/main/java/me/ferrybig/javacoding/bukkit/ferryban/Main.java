@@ -235,9 +235,12 @@ public class Main extends JavaPlugin implements Listener {
 	public void scheduleSave() {
 		if (this.saveTask == null) {
 			refreshTask();
-			this.saveTask.runTaskTimer(this, 6000, 6000);
+			this.saveTask.runTaskTimer(this, AUTO_SAVE_INTERVAL, AUTO_SAVE_RETRY_INTERVAL);
 		}
 	}
+	
+	private static final int AUTO_SAVE_INTERVAL = 6000;
+	private static final int AUTO_SAVE_RETRY_INTERVAL = 6000;
 
 	private BukkitRunnable createTask() {
 		return new BukkitRunnable() {
