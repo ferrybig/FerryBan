@@ -20,7 +20,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -38,7 +37,6 @@ import me.ferrybig.javacoding.bukkit.ferryban.commands.TempBanCommand;
 import me.ferrybig.javacoding.bukkit.ferryban.commands.TempBanIpCommand;
 import me.ferrybig.javacoding.bukkit.ferryban.utils.TimeConverter;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -57,49 +55,28 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class Main extends JavaPlugin implements Listener {
 
 	private static final Charset UTF8 = StandardCharsets.UTF_8;
-
-	public static final UUID CONSOLE = UUID.nameUUIDFromBytes("CONSOLE".getBytes(UTF8));
-
-	public final Map<InetAddress, IpBanInfo> ipBans = new HashMap<>();
-
-	public final Map<UUID, PlayerBanInfo> playerBans = new HashMap<>();
-
+	private static final String BAN_FILE_CONFIG_HEADER = "#| FerryBan config V ";
 	private static final String IP_BANS_FILE = "ipbans.yml";
-
 	private static final String PLAYER_BANS_FILE = "playerbans.yml";
-
 	private static final String CONFIG_VERSION = "1";
 
+	public static final UUID CONSOLE = UUID.nameUUIDFromBytes("CONSOLE".getBytes(UTF8));
 	public static final DateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm (X)");
+
+	public final Map<InetAddress, IpBanInfo> ipBans = new HashMap<>();
+	public final Map<UUID, PlayerBanInfo> playerBans = new HashMap<>();
+
+	public final Map<UUID, InetAddress> playerToIp = new SizeLimitedLinkedList<>(100);
+	public final Map<InetAddress, UUID> ipToPlayer = new SizeLimitedLinkedList<>(100);
 
 	private boolean enabled = false;
 
 	private TemplateFile banFormat;
-
 	private TemplateFile foreverBanFormat;
-
 	private TemplateFile kickFormat;
 
 	private TemplateFile kickGameFormat;
-
 	private TemplateFile banGameFormat;
-
-	public final Map<UUID, InetAddress> playerToIp = new LinkedHashMap<UUID, InetAddress>() {
-
-		@Override
-		protected boolean removeEldestEntry(Map.Entry<UUID, InetAddress> eldest) {
-			return size() > 100;
-		}
-
-	};
-	public final Map<InetAddress, UUID> ipToPlayer = new LinkedHashMap<InetAddress, UUID>() {
-
-		@Override
-		protected boolean removeEldestEntry(Map.Entry<InetAddress, UUID> eldest) {
-			return size() > 100;
-		}
-
-	};
 
 	private BukkitRunnable saveTask;
 
@@ -311,7 +288,6 @@ public class Main extends JavaPlugin implements Listener {
 			throw e;
 		}
 	}
-	private static final String BAN_FILE_CONFIG_HEADER = "#| FerryBan config V ";
 
 	public String formatBanInfo(BanInfo info) {
 		TemplateFile format;
@@ -416,4 +392,5 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		}
 	}
+
 }
