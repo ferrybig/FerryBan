@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author Fernando
  */
-class SizeLimitedLinkedList<K, V> extends LinkedHashMap<K, V> {
+public class SizeLimitedLinkedList<K, V> extends LinkedHashMap<K, V> {
 	
 	private final int size;
 
