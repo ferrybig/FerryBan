@@ -56,8 +56,8 @@ public class Main extends JavaPlugin implements Listener {
 
 	private static final Charset UTF8 = StandardCharsets.UTF_8;
 	private static final String BAN_FILE_CONFIG_HEADER = "#| FerryBan config V ";
-	private static final String IP_BANS_FILE = "ipbans.yml";
-	private static final String PLAYER_BANS_FILE = "playerbans.yml";
+	private static final String IP_BANS_FILE = "ipbans.txt";
+	private static final String PLAYER_BANS_FILE = "playerbans.txt";
 	private static final String CONFIG_VERSION = "1";
 
 	public static final UUID CONSOLE = UUID.nameUUIDFromBytes("CONSOLE".getBytes(UTF8));
@@ -120,6 +120,16 @@ public class Main extends JavaPlugin implements Listener {
 	public void load() throws IOException {
 		File bansInfo = new File(this.getDataFolder(), IP_BANS_FILE);
 		File playersInfo = new File(this.getDataFolder(), PLAYER_BANS_FILE);
+		{
+			File legacyBansInfo = new File(this.getDataFolder(), IP_BANS_FILE.replace("txt", "yml"));
+			if(legacyBansInfo.exists() && !bansInfo.exists()) {
+				legacyBansInfo.renameTo(bansInfo);
+			}
+			File legacyplayersInfo = new File(this.getDataFolder(), PLAYER_BANS_FILE.replace("txt", "yml"));
+			if(legacyplayersInfo.exists() && !bansInfo.exists()) {
+				legacyplayersInfo.renameTo(bansInfo);
+			}
+		}
 		banFormat = new TemplateFile(this, new File(this.getDataFolder(), "ban.template"));
 		kickFormat = new TemplateFile(this, new File(this.getDataFolder(), "kick.template"));
 		foreverBanFormat = new TemplateFile(this, new File(this.getDataFolder(), "banforever.template"));
