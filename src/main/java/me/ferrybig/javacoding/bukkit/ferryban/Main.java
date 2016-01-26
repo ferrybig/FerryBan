@@ -66,8 +66,8 @@ public class Main extends JavaPlugin implements Listener {
 	public final Map<InetAddress, IpBanInfo> ipBans = new HashMap<>();
 	public final Map<UUID, PlayerBanInfo> playerBans = new HashMap<>();
 
-	public final Map<UUID, InetAddress> playerToIp = new SizeLimitedLinkedList<>(100);
-	public final Map<InetAddress, UUID> ipToPlayer = new SizeLimitedLinkedList<>(100);
+	public final Map<UUID, InetAddress> playerToIp = new SizeLimitedLinkedMap<>(100);
+	public final Map<InetAddress, UUID> ipToPlayer = new SizeLimitedLinkedMap<>(100);
 
 	private boolean enabled = false;
 
