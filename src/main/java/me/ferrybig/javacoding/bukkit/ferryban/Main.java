@@ -85,7 +85,7 @@ public class Main extends JavaPlugin implements Listener {
 		try {
 			load();
 		} catch (IOException e) {
-			this.getLogger().log(Level.SEVERE, "Cannot load plugin", e);
+			this.getLogger().log(Level.SEVERE, "Failed to load configuration files", e);
 			this.getServer().getPluginManager().disablePlugin(this);
 			this.setEnabled(false);
 			return;
