@@ -390,6 +390,7 @@ public class Main extends JavaPlugin implements Listener {
 				this.scheduleSave();
 			} else {
 				event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, this.formatBanInfo(info));
+				return;
 			}
 		}
 		info = this.ipBans.get(event.getAddress());
