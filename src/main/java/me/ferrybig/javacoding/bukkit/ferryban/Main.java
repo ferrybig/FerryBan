@@ -100,7 +100,7 @@ public class Main extends JavaPlugin implements Listener {
 		this.getCommand("kick-ip").setExecutor(new KickIpCommand(this));
 		this.getCommand("pardon").setExecutor(new PardonCommand(this));
 		this.getCommand("pardon-ip").setExecutor(new PardonIpCommand(this));
-		this.getCommand("ferrybanreload").setExecutor(new ReloadCommand(this));
+		this.getCommand("ferry-ban-reload").setExecutor(new ReloadCommand(this));
 		this.getServer().getPluginManager().registerEvents(this, this);
 		enabled = true;
 	}
