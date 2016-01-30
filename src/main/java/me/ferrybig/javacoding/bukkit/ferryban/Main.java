@@ -169,8 +169,9 @@ public class Main extends JavaPlugin implements Listener {
 
 		if (playersInfo.exists()) {
 			playerBans.clear();
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
-					playersInfo), UTF8))) {
+			try (BufferedReader reader = new BufferedReader(
+					new InputStreamReader(new FileInputStream(playersInfo), 
+					UTF8))) {
 				String line;
 				while ((line = reader.readLine()) != null) {
 					if (line.startsWith("#")) {
@@ -186,10 +187,12 @@ public class Main extends JavaPlugin implements Listener {
 					String reason = parts[3];
 
 					if (now > time) {
-						getLogger().log(Level.INFO, "Ban of {0} has expired.", userid);
+						getLogger().log(Level.INFO, "Ban of {0} has expired.",
+								userid);
 						continue;
 					}
-					this.playerBans.put(userid, new PlayerBanInfo(userid, time, banner, reason));
+					this.playerBans.put(userid, new PlayerBanInfo(userid, time, 
+							banner, reason));
 				}
 			} catch (IOException ex) {
 				exceptions.add(ex);
@@ -248,8 +251,8 @@ public class Main extends JavaPlugin implements Listener {
 		this.getDataFolder().mkdir();
 		List<Exception> exceptions = new ArrayList<>();
 
-		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-				new File(this.getDataFolder(), IP_BANS_FILE)), UTF8))) {
+		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream(new File(this.getDataFolder(), IP_BANS_FILE)), UTF8))) {
 			writer.append(BAN_FILE_CONFIG_HEADER);
 			writer.append(CONFIG_VERSION);
 			writer.newLine();
@@ -269,8 +272,8 @@ public class Main extends JavaPlugin implements Listener {
 			exceptions.add(ex);
 		}
 
-		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-				new File(this.getDataFolder(), PLAYER_BANS_FILE)), UTF8))) {
+		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream(new File(this.getDataFolder(), PLAYER_BANS_FILE)), UTF8))) {
 			writer.append(BAN_FILE_CONFIG_HEADER);
 			writer.append(CONFIG_VERSION);
 			writer.newLine();
@@ -308,7 +311,8 @@ public class Main extends JavaPlugin implements Listener {
 		} else {
 			format = banFormat;
 		}
-		return format.getFormat().replace("{{reason}}", info.getReason()).replace("{{expires}}", TimeConverter.getMessage(info.getUntil() - System.currentTimeMillis(), 1));
+		return format.getFormat().replace("{{reason}}", info.getReason()).replace("{{expires}}", 
+				TimeConverter.getMessage(info.getUntil() - System.currentTimeMillis(), 1));
 	}
 
 	public void actOnIp(CommandSender banner, InetAddress address, String reason, long time) {
@@ -348,14 +352,16 @@ public class Main extends JavaPlugin implements Listener {
 	public void actOnPlayer(CommandSender banner, UUID username, String reason, long time) {
 		final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(username);
 		final UUID uniqueId = offlinePlayer.getUniqueId();
-		PlayerBanInfo info = new PlayerBanInfo(uniqueId, time, banner instanceof Player ? ((Player) banner).getUniqueId() : CONSOLE, reason);
+		PlayerBanInfo info = new PlayerBanInfo(uniqueId, time, 
+				banner instanceof Player ? ((Player) banner).getUniqueId() : CONSOLE, reason);
 		if (time != 0) {
 			Command.broadcastCommandMessage(banner, "Banned player " + offlinePlayer.getName());
 			this.playerBans.put(uniqueId, info);
 			for (String s : this.banGameFormat.getFormat()
 					.replace("{{name}}", offlinePlayer.getName())
 					.replace("{{reason}}", reason)
-					.replace("{{expires}}", TimeConverter.getMessage(info.getUntil() - System.currentTimeMillis(), 1))
+					.replace("{{expires}}", 
+							TimeConverter.getMessage(info.getUntil() - System.currentTimeMillis(), 1))
 					.split("\n")) {
 				Bukkit.broadcastMessage(s);
 			}
