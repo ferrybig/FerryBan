@@ -31,6 +31,7 @@ public class BanCommand implements CommandExecutor {
 		if (!command.testPermission(sender)) {
 			return true;
 		}
+		@SuppressWarnings("deprecation")
 		OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
 		if (player == null) {
 			sender.sendMessage("Player not found!");
