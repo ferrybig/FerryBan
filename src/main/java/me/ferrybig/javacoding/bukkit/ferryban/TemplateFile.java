@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.ChatColor;
 
@@ -23,7 +24,7 @@ public class TemplateFile {
 	private final Main main;
 	
 	private final File file;
-	private String contents = "";
+	private String contents = null;
 
 	public TemplateFile(Main main, File file) {
 		this.main = main;
@@ -31,6 +32,10 @@ public class TemplateFile {
 	}
 
 	public String getFormat() {
+		if(contents == null) {
+			contents = "";
+			load(new ArrayList<Exception>());
+		}
 		return contents;
 	}
 
